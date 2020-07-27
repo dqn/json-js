@@ -1,15 +1,16 @@
-'use strict';
-
 const SPACE_REGEXP = /\s/g;
 const NUMBER_REGEXP = /\d/;
 
+type JsonValue = null | string | number | boolean | { [key: string]: JsonValue } | JsonValue[];
+
 class Parser {
-  constructor(jsonString) {
-    this.jsonString = jsonString;
-    this.chars = jsonString.replace(SPACE_REGEXP, '').split('');
+  chars: string[] = [];
+
+  constructor(text: string) {
+    this.chars = text.replace(SPACE_REGEXP, '').split('');
   }
 
-  next(expect) {
+  next(expect: string | RegExp) {
     if (typeof expect === 'object') {
       return expect.test(this.chars[0]);
     } else if (typeof expect === 'string') {
@@ -17,11 +18,11 @@ class Parser {
     }
   }
 
-  shift() {
+  shift(): string | undefined {
     return this.chars.shift();
   }
 
-  consume(expect) {
+  consume(expect: string) {
     for (const c of expect) {
       if (!this.next(c)) {
         throw new Error(`expect "${c}", but got "${this.chars[0]}"`);
@@ -30,10 +31,10 @@ class Parser {
     }
   }
 
-  parseObject() {
+  parseObject(): { [key: string]: JsonValue } {
     this.consume('{');
 
-    const obj = {};
+    const obj: { [key: string]: JsonValue } = {};
 
     while (!this.next('}')) {
       const key = this.parseString();
@@ -50,10 +51,10 @@ class Parser {
     return obj;
   }
 
-  parseArray() {
+  parseArray(): JsonValue[] {
     this.consume('[');
 
-    const arr = [];
+    const arr: JsonValue = [];
 
     while (!this.next(']')) {
       arr.push(this.parse());
@@ -68,7 +69,7 @@ class Parser {
     return arr;
   }
 
-  parseString() {
+  parseString(): string {
     this.consume('"');
 
     let str = '';
@@ -88,7 +89,7 @@ class Parser {
     return str;
   }
 
-  parseNumber() {
+  parseNumber(): number {
     let str = '';
 
     while (this.next(NUMBER_REGEXP)) {
@@ -98,22 +99,22 @@ class Parser {
     return Number(str);
   }
 
-  parseTrue() {
+  parseTrue(): true {
     this.consume('true');
     return true;
   }
 
-  parseFalse() {
+  parseFalse(): false {
     this.consume('false');
     return false;
   }
 
-  parseNull() {
+  parseNull(): null {
     this.consume('null');
     return null;
   }
 
-  parse() {
+  parse(): any {
     if (this.next('{')) {
       return this.parseObject();
     } else if (this.next('[')) {
@@ -129,15 +130,11 @@ class Parser {
     } else if (this.next('n')) {
       return this.parseNull();
     } else {
-      throw new Error(`could not parse ${this.jsonString}`);
+      throw new Error(`failed to parse the JSON`);
     }
   }
 }
 
-function parse(jsonString) {
-  return new Parser(jsonString).parse();
+export function parse(text: string) {
+  return new Parser(text).parse();
 }
-
-module.exports = {
-  parse,
-};
