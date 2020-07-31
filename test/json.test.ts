@@ -57,15 +57,9 @@ describe('parse', () => {
   });
 
   test('complex', () => {
-    const act = parse(
-      '{"foo":"bar","baz":42,"qux":{"quux":["corge",{"grault":"garply"},[23,"waldo",true,false,],null]}}',
-    );
-    const exp = {
-      foo: 'bar',
-      baz: 42,
-      qux: { quux: ['corge', { grault: 'garply' }, [23, 'waldo', true, false], null] },
-    };
-    expect(act).toEqual(exp);
+    const val =
+      '{"foo":"bar","baz":42,"qux":{"quux":["corge",{"grault":"garply"},[23,"waldo",true,false],null]}}';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('multiple line', () => {
