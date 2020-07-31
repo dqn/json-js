@@ -2,47 +2,58 @@ import { parse } from '../src/json';
 
 describe('parse', () => {
   test('null', () => {
-    expect(parse('null')).toEqual(null);
+    const val = 'null';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('true', () => {
-    expect(parse('true')).toEqual(true);
+    const val = 'true';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('false', () => {
-    expect(parse('false')).toEqual(false);
+    const val = 'false';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('string', () => {
-    expect(parse('"xxx"')).toEqual('xxx');
+    const val = '"xxx"';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('number', () => {
-    expect(parse('42')).toEqual(42);
+    const val = '42';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('object', () => {
-    expect(parse('{"xxx": "yyy", "yyy": "zzz"}')).toEqual({ xxx: 'yyy', yyy: 'zzz' });
+    const val = '{"xxx": "yyy", "yyy": "zzz"}';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('empty object', () => {
-    expect(parse('{}')).toEqual({});
+    const val = '{}';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('nested object', () => {
-    expect(parse('{"xxx": {"yyy": {"zzz": null}}}')).toEqual({ xxx: { yyy: { zzz: null } } });
+    const val = '{"xxx": {"yyy": {"zzz": null}}}';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('array', () => {
-    expect(parse('[42, "xxx", {}, null]')).toEqual([42, 'xxx', {}, null]);
+    const val = '[42, "xxx", {}, null]';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('empty array', () => {
-    expect(parse('[]')).toEqual([]);
+    const val = '[]';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('nested array', () => {
-    expect(parse('[[[null]]]')).toEqual([[[null]]]);
+    const val = '[[[null]]]';
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 
   test('complex', () => {
@@ -58,7 +69,7 @@ describe('parse', () => {
   });
 
   test('multiple line', () => {
-    const text = `
+    const val = `
 {
   "xxx": {
     "yyy": {
@@ -67,6 +78,6 @@ describe('parse', () => {
   }
 }
 `;
-    expect(parse(text)).toEqual({ xxx: { yyy: { zzz: null } } });
+    expect(parse(val)).toEqual(JSON.parse(val));
   });
 });
