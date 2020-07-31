@@ -1,6 +1,6 @@
 type JsonValue = null | string | number | boolean | { [key: string]: JsonValue } | JsonValue[];
 
-export function parse(text: string) {
+export function parse(text: string): any {
   const chars = text.replace(/\s/g, '').split('');
 
   const next = (expect: string | RegExp): boolean => {
@@ -33,7 +33,7 @@ export function parse(text: string) {
     while (!next('}')) {
       const key = parseString();
       consume(':');
-      obj[key] = parse();
+      obj[key] = _parse();
 
       if (next(',')) {
         shift();
@@ -51,7 +51,7 @@ export function parse(text: string) {
     const arr: JsonValue = [];
 
     while (!next(']')) {
-      arr.push(parse());
+      arr.push(_parse());
 
       if (next(',')) {
         shift();
@@ -108,7 +108,7 @@ export function parse(text: string) {
     return null;
   };
 
-  const parse = (): any => {
+  const _parse = (): any => {
     if (next('{')) {
       return parseObject();
     } else if (next('[')) {
@@ -128,5 +128,5 @@ export function parse(text: string) {
     }
   };
 
-  return parse();
+  return _parse();
 }
