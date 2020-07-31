@@ -130,3 +130,38 @@ export function parse(text: string): any {
 
   return _parse();
 }
+
+export function stringify(value: any): string {
+  const _stringify = (value: any): string => {
+    if (value === null) {
+      return 'null';
+    }
+
+    if (Array.isArray(value)) {
+      return `[${value.map((val) => _stringify(val)).join(',')}]`;
+    }
+
+    switch (typeof value) {
+      case 'object': {
+        const inner = Object.entries(value)
+          .map(([k, v]) => `"${k}":${_stringify(v)}`)
+          .join(',');
+        return `{${inner}}`;
+      }
+      case 'string': {
+        return `"${value}"`;
+      }
+      case 'number': {
+        return value.toString();
+      }
+      case 'boolean': {
+        return value.toString();
+      }
+      default: {
+        throw new Error(`failed to stringify the JSON`);
+      }
+    }
+  };
+
+  return _stringify(value);
+}
